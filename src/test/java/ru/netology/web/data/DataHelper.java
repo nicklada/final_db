@@ -154,6 +154,4 @@ public class DataHelper {
     public static Cvv getInvalidSymbolsCVV() {
         return new Cvv("j@_");
     }
-
-
 }

@@ -1,8 +1,10 @@
 package ru.netology.web.page;
 
+import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import ru.netology.web.data.DataHelper;
+
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
@@ -20,6 +22,15 @@ public class PaymentPage {
     private SelenideElement ownerField = fields.get(3);
     private SelenideElement cvvField = $("[maxlength='3']");
 
+    private SelenideElement success = $(byText("Операция одобрена Банком."));
+    private SelenideElement fail = $(byText("Ошибка! Банк отказал в проведении операции."));
+    private SelenideElement wrongFormatCard = $(byText("Неверный формат"));
+    private SelenideElement wrongTerm = $(byText("Неверно указан срок действия карты"));
+    private SelenideElement cardExpired = $(byText("Истёк срок действия карты"));
+    private SelenideElement shouldFillField = $(byText("Поле обязательно для заполнения"));
+
+    private long timeout = 15000;
+
     public void payByCard() {
         byuButton.click();
     }
@@ -35,5 +46,29 @@ public class PaymentPage {
         ownerField.sendKeys(Owner.getOwner());
         cvvField.sendKeys(Cvv.getCvv());
         continueButton.click();
+    }
+
+    public void successMessage() {
+        success.waitUntil(Condition.visible, timeout);
+    }
+
+    public void failMessage() {
+        fail.waitUntil(Condition.visible, timeout);
+    }
+
+    public void wrongFormatCardMessage() {
+        wrongFormatCard.waitUntil(Condition.visible, timeout);
+    }
+
+    public void wrongTermMessage() {
+        wrongTerm.waitUntil(Condition.visible, timeout);
+    }
+
+    public void cardExpiredMessage() {
+        cardExpired.waitUntil(Condition.visible, timeout);
+    }
+
+    public void shouldFillMessage() {
+        shouldFillField.waitUntil(Condition.visible, timeout);
     }
 }

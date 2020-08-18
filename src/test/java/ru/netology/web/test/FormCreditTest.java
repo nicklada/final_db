@@ -1,7 +1,5 @@
 package ru.netology.web.test;
 
-import com.codeborne.selenide.Condition;
-import com.codeborne.selenide.SelenideElement;
 import com.codeborne.selenide.logevents.SelenideLogger;
 import io.qameta.allure.selenide.AllureSelenide;
 import lombok.val;
@@ -12,8 +10,8 @@ import ru.netology.web.page.PaymentPage;
 
 import java.sql.SQLException;
 
-import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class FormCreditTest {
     @BeforeAll
@@ -36,8 +34,6 @@ public class FormCreditTest {
         SelenideLogger.removeListener("allure");
     }
 
-    private SelenideElement success = $(byText("Операция одобрена Банком."));
-    private SelenideElement fail = $(byText("Ошибка! Банк отказал в проведении операции."));
     private String approvedStatus = "APPROVED";
     private String declinedStatus = "DECLINED";
 
@@ -55,10 +51,11 @@ public class FormCreditTest {
             val paymentPage = new PaymentPage();
             paymentPage.creditByCard();
             paymentPage.fillForm(number, month, year, owner, cvv);
-            success.waitUntil(Condition.visible, 15000);
+            paymentPage.successMessage();
+            TablesHelper.compareCreditAndTransactionID();
             String expectedStatus = approvedStatus;
             String actualStatus = TablesHelper.getCreditStatus();
-            Assertions.assertEquals(expectedStatus, actualStatus);
+            assertEquals(expectedStatus, actualStatus);
         }
 
         @Test
@@ -68,7 +65,8 @@ public class FormCreditTest {
             val paymentPage = new PaymentPage();
             paymentPage.creditByCard();
             paymentPage.fillForm(number, month, year, owner, cvv);
-            fail.waitUntil(Condition.visible, 15000);
+            paymentPage.failMessage();
+            TablesHelper.compareCreditAndTransactionID();
             String expectedStatus = declinedStatus;
             String actualStatus = TablesHelper.getCreditStatus();
             Assertions.assertEquals(expectedStatus, actualStatus);
@@ -81,7 +79,8 @@ public class FormCreditTest {
             val paymentPage = new PaymentPage();
             paymentPage.creditByCard();
             paymentPage.fillForm(number, month, year, owner, cvv);
-            fail.waitUntil(Condition.visible, 15000);
+            paymentPage.failMessage();
+            TablesHelper.compareCreditAndTransactionID();
             String expectedStatus = declinedStatus;
             String actualStatus = TablesHelper.getCreditStatus();
             Assertions.assertEquals(expectedStatus, actualStatus);
@@ -90,8 +89,6 @@ public class FormCreditTest {
 
     @Nested
     public class NumberFieldTests {
-        private SelenideElement wrongFormatCard = $(byText("Неверный формат"));
-
         private DataHelper.Month month = DataHelper.getValidMonth();
         private DataHelper.Year year = DataHelper.getValidYear();
         private DataHelper.Owner owner = DataHelper.getValidOwner();
@@ -104,7 +101,7 @@ public class FormCreditTest {
             val paymentPage = new PaymentPage();
             paymentPage.creditByCard();
             paymentPage.fillForm(number, month, year, owner, cvv);
-            wrongFormatCard.waitUntil(Condition.visible, 15000);
+            paymentPage.wrongFormatCardMessage();
         }
 
         @Test
@@ -114,7 +111,7 @@ public class FormCreditTest {
             val paymentPage = new PaymentPage();
             paymentPage.creditByCard();
             paymentPage.fillForm(number, month, year, owner, cvv);
-            wrongFormatCard.waitUntil(Condition.visible, 15000);
+            paymentPage.wrongFormatCardMessage();
         }
 
         @Test
@@ -124,7 +121,7 @@ public class FormCreditTest {
             val paymentPage = new PaymentPage();
             paymentPage.creditByCard();
             paymentPage.fillForm(number, month, year, owner, cvv);
-            wrongFormatCard.waitUntil(Condition.visible, 15000);
+            paymentPage.wrongFormatCardMessage();
         }
 
         @Test
@@ -134,7 +131,8 @@ public class FormCreditTest {
             val paymentPage = new PaymentPage();
             paymentPage.creditByCard();
             paymentPage.fillForm(number, month, year, owner, cvv);
-            success.waitUntil(Condition.visible, 15000);
+            paymentPage.successMessage();
+            TablesHelper.compareCreditAndTransactionID();
             String expectedStatus = approvedStatus;
             String actualStatus = TablesHelper.getCreditStatus();
             Assertions.assertEquals(expectedStatus, actualStatus);
@@ -143,9 +141,6 @@ public class FormCreditTest {
 
     @Nested
     public class MonthFieldTests {
-        private SelenideElement wrongFormatCard = $(byText("Неверный формат"));
-        private SelenideElement wrongTerm = $(byText("Неверно указан срок действия карты"));
-
         private DataHelper.Number number = DataHelper.getApprovedValidCard();
         private DataHelper.Year year = DataHelper.getValidYear();
         private DataHelper.Owner owner = DataHelper.getValidOwner();
@@ -158,7 +153,7 @@ public class FormCreditTest {
             val paymentPage = new PaymentPage();
             paymentPage.creditByCard();
             paymentPage.fillForm(number, month, year, owner, cvv);
-            wrongFormatCard.waitUntil(Condition.visible, 15000);
+            paymentPage.wrongFormatCardMessage();
         }
 
         @Test
@@ -168,7 +163,7 @@ public class FormCreditTest {
             val paymentPage = new PaymentPage();
             paymentPage.creditByCard();
             paymentPage.fillForm(number, month, year, owner, cvv);
-            wrongTerm.waitUntil(Condition.visible, 15000);
+            paymentPage.wrongTermMessage();
         }
 
         @Test
@@ -178,7 +173,7 @@ public class FormCreditTest {
             val paymentPage = new PaymentPage();
             paymentPage.creditByCard();
             paymentPage.fillForm(number, month, year, owner, cvv);
-            wrongTerm.waitUntil(Condition.visible, 15000);
+            paymentPage.wrongTermMessage();
         }
 
         @Test
@@ -188,7 +183,7 @@ public class FormCreditTest {
             val paymentPage = new PaymentPage();
             paymentPage.creditByCard();
             paymentPage.fillForm(number, month, year, owner, cvv);
-            wrongFormatCard.waitUntil(Condition.visible, 15000);
+            paymentPage.wrongFormatCardMessage();
         }
 
         @Test
@@ -198,7 +193,7 @@ public class FormCreditTest {
             val paymentPage = new PaymentPage();
             paymentPage.creditByCard();
             paymentPage.fillForm(number, month, year, owner, cvv);
-            wrongFormatCard.waitUntil(Condition.visible, 15000);
+            paymentPage.wrongFormatCardMessage();
         }
 
         @Test
@@ -208,7 +203,8 @@ public class FormCreditTest {
             val paymentPage = new PaymentPage();
             paymentPage.creditByCard();
             paymentPage.fillForm(number, month, year, owner, cvv);
-            success.waitUntil(Condition.visible, 15000);
+            paymentPage.successMessage();
+            TablesHelper.compareCreditAndTransactionID();
             String expectedStatus = approvedStatus;
             String actualStatus = TablesHelper.getCreditStatus();
             Assertions.assertEquals(expectedStatus, actualStatus);
@@ -217,9 +213,6 @@ public class FormCreditTest {
 
     @Nested
     public class YearFieldTests {
-        private SelenideElement wrongFormatCard = $(byText("Неверный формат"));
-        private SelenideElement cardExpired = $(byText("Истёк срок действия карты"));
-
         DataHelper.Number number = DataHelper.getApprovedValidCard();
         DataHelper.Month month = DataHelper.getValidMonth();
         DataHelper.Owner owner = DataHelper.getValidOwner();
@@ -232,7 +225,7 @@ public class FormCreditTest {
             val paymentPage = new PaymentPage();
             paymentPage.creditByCard();
             paymentPage.fillForm(number, month, year, owner, cvv);
-            wrongFormatCard.waitUntil(Condition.visible, 15000);
+            paymentPage.wrongFormatCardMessage();
         }
 
         @Test
@@ -242,7 +235,7 @@ public class FormCreditTest {
             val paymentPage = new PaymentPage();
             paymentPage.creditByCard();
             paymentPage.fillForm(number, month, year, owner, cvv);
-            wrongFormatCard.waitUntil(Condition.visible, 15000);
+            paymentPage.wrongFormatCardMessage();
         }
 
         @Test
@@ -252,7 +245,7 @@ public class FormCreditTest {
             val paymentPage = new PaymentPage();
             paymentPage.creditByCard();
             paymentPage.fillForm(number, month, year, owner, cvv);
-            cardExpired.waitUntil(Condition.visible, 15000);
+            paymentPage.cardExpiredMessage();
         }
 
         @Test
@@ -262,7 +255,7 @@ public class FormCreditTest {
             val paymentPage = new PaymentPage();
             paymentPage.creditByCard();
             paymentPage.fillForm(number, month, year, owner, cvv);
-            wrongFormatCard.waitUntil(Condition.visible, 15000);
+            paymentPage.wrongFormatCardMessage();
         }
 
         @Test
@@ -272,7 +265,8 @@ public class FormCreditTest {
             val paymentPage = new PaymentPage();
             paymentPage.creditByCard();
             paymentPage.fillForm(number, month, year, owner, cvv);
-            success.waitUntil(Condition.visible, 15000);
+            paymentPage.successMessage();
+            TablesHelper.compareCreditAndTransactionID();
             String expectedStatus = approvedStatus;
             String actualStatus = TablesHelper.getCreditStatus();
             Assertions.assertEquals(expectedStatus, actualStatus);
@@ -281,8 +275,6 @@ public class FormCreditTest {
 
     @Nested
     public class OwnerFieldTests {
-        private SelenideElement wrongFormatCard = $(byText("Поле обязательно для заполнения"));
-
         DataHelper.Number number = DataHelper.getApprovedValidCard();
         DataHelper.Month month = DataHelper.getValidMonth();
         DataHelper.Year year = DataHelper.getValidYear();
@@ -295,7 +287,7 @@ public class FormCreditTest {
             val paymentPage = new PaymentPage();
             paymentPage.creditByCard();
             paymentPage.fillForm(number, month, year, owner, cvv);
-            wrongFormatCard.waitUntil(Condition.visible, 15000);
+            paymentPage.wrongFormatCardMessage();
         }
 
         @Test
@@ -305,7 +297,7 @@ public class FormCreditTest {
             val paymentPage = new PaymentPage();
             paymentPage.creditByCard();
             paymentPage.fillForm(number, month, year, owner, cvv);
-            wrongFormatCard.waitUntil(Condition.visible, 15000);
+            paymentPage.wrongFormatCardMessage();
         }
 
         @Test
@@ -315,7 +307,7 @@ public class FormCreditTest {
             val paymentPage = new PaymentPage();
             paymentPage.creditByCard();
             paymentPage.fillForm(number, month, year, owner, cvv);
-            wrongFormatCard.waitUntil(Condition.visible, 15000);
+            paymentPage.wrongFormatCardMessage();
         }
 
         @Test
@@ -325,7 +317,7 @@ public class FormCreditTest {
             val paymentPage = new PaymentPage();
             paymentPage.creditByCard();
             paymentPage.fillForm(number, month, year, owner, cvv);
-            wrongFormatCard.waitUntil(Condition.visible, 15000);
+            paymentPage.wrongFormatCardMessage();
         }
 
         @Test
@@ -335,14 +327,12 @@ public class FormCreditTest {
             val paymentPage = new PaymentPage();
             paymentPage.creditByCard();
             paymentPage.fillForm(number, month, year, owner, cvv);
-            wrongFormatCard.waitUntil(Condition.visible, 15000);
+            paymentPage.wrongFormatCardMessage();
         }
     }
 
     @Nested
     public class CVVFieldTests {
-        private SelenideElement wrongFormatCard = $(byText("Неверный формат"));
-
         DataHelper.Number number = DataHelper.getApprovedValidCard();
         DataHelper.Month month = DataHelper.getValidMonth();
         DataHelper.Year year = DataHelper.getValidYear();
@@ -355,7 +345,7 @@ public class FormCreditTest {
             val paymentPage = new PaymentPage();
             paymentPage.creditByCard();
             paymentPage.fillForm(number, month, year, owner, cvv);
-            wrongFormatCard.waitUntil(Condition.visible, 15000);
+            paymentPage.wrongFormatCardMessage();
         }
 
         @Test
@@ -365,7 +355,7 @@ public class FormCreditTest {
             val paymentPage = new PaymentPage();
             paymentPage.creditByCard();
             paymentPage.fillForm(number, month, year, owner, cvv);
-            wrongFormatCard.waitUntil(Condition.visible, 15000);
+            paymentPage.wrongFormatCardMessage();
         }
 
         @Test
@@ -375,7 +365,7 @@ public class FormCreditTest {
             val paymentPage = new PaymentPage();
             paymentPage.creditByCard();
             paymentPage.fillForm(number, month, year, owner, cvv);
-            wrongFormatCard.waitUntil(Condition.visible, 15000);
+            paymentPage.wrongFormatCardMessage();
         }
 
         @Test
@@ -385,7 +375,8 @@ public class FormCreditTest {
             val paymentPage = new PaymentPage();
             paymentPage.creditByCard();
             paymentPage.fillForm(number, month, year, owner, cvv);
-            success.waitUntil(Condition.visible, 15000);
+            paymentPage.successMessage();
+            TablesHelper.compareCreditAndTransactionID();
             String expectedStatus = approvedStatus;
             String actualStatus = TablesHelper.getCreditStatus();
             Assertions.assertEquals(expectedStatus, actualStatus);
