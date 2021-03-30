@@ -35,6 +35,8 @@ dependencies {
     implementation 'org.jetbrains:annotations:15.0'
     testImplementation 'io.rest-assured:rest-assured:4.3.0'
     testImplementation'io.qameta.allure:allure-selenide:2.13.0'
+
+    compile group: 'postgresql', name: 'postgresql', version: '9.0-801.jdbc4'
 }
 
 test {
