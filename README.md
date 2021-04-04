@@ -32,7 +32,9 @@ mysql_1  | 2020-08-08T09:02:44.761363Z 0 [System] [MY-011323] [Server] X Plugin 
 3. 
 а) Запустите работу базы mySQL в контейнере командой `docker-compose exec mysql mysql -u app -p app -v`
 В открывшееся поле ввода пароля введите пароль: `pass`
+
 или
+
 б) Запустите работу базы postgreSQL в контейнере командой docker exec -it app_db psql -U app -W app app В открывшееся поле ввода пароля введите пароль: pass
 
 4. Запустите работу приложения командой `java -jar aqa-shop.jar`
