@@ -3,26 +3,20 @@ services:
   mysql:
     image: mysql:8.0.19
     ports:
-      - '3306:3306'
+      - 3306:3306
     volumes:
       - ./data:/var/lib/mysql
     environment:
-      - MYSQL_RANDOM_ROOT_PASSWORD=yes
       - MYSQL_DATABASE=app
       - MYSQL_USER=app
       - MYSQL_PASSWORD=pass
-  db:
+  postgres:
     container_name: app_db
     image: postgres:9.5
-    volumes:
-      - sample_db:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
     environment:
       - POSTGRES_PASSWORD=pass
       - POSTGRES_USER=app
       - POSTGRES_DB=app
       - PGDATA=/var/lib/postgresql/data/pgdata
-    ports:
-      - '5432:5432'
-
-  volumes:
-    sample_db: {}
